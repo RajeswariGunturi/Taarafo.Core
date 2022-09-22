@@ -16,9 +16,9 @@ namespace Taarafo.Core.Services.Foundations.Events
         public EventService(IStorageBroker storageBroker) =>
             this.storageBroker = storageBroker;
 
-        public ValueTask<Event> AddEventAsync(Event @event)
+        public async ValueTask<Event> AddEventAsync(Event @event)
         {
-            throw new System.NotImplementedException();
+            return await this.storageBroker.InsertEventAsync(@event);
         }
     }
 }
