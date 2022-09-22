@@ -6,7 +6,7 @@
 using System;
 using System.Reflection.Metadata;
 
-namespace Taarafo.Core.Models.NewFolder
+namespace Taarafo.Core.Models.Events
 {
     public class Event
     {
