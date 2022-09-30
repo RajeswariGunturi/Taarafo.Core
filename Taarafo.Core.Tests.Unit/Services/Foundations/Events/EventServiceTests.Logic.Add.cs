@@ -13,6 +13,7 @@ using Force.DeepCloner;
 using Moq;
 using Taarafo.Core.Brokers.Storages;
 using Taarafo.Core.Models.Events;
+using Taarafo.Core.Models.Events.Exceptions;
 using Taarafo.Core.Services.Foundations.Events;
 using Tynamix.ObjectFiller;
 using Xunit;
@@ -21,6 +22,39 @@ namespace Taarafo.Core.Tests.Unit.Services.Foundations.Events
 {
     public partial class EventServiceTests
     {
+        [Fact]
+        public async Task ShouldThrowValidationExceptionOnAddIfEventIsNullAndLogItAsync()
+        {
+            // given
+            Event nullEvent = null;
+
+            var nullEventException =
+                new NullEventException();
+
+            var expectedEventValidationException =
+                new EventValidationException(nullEventException);
+
+            // when
+            ValueTask<Event> addEventTask =
+                this.eventService.AddEventAsync(nullEvent);
+
+            EventValidationException actualEventValidationException =
+               await Assert.ThrowsAsync<EventValidationException>(
+                   addEventTask.AsTask);
+
+            // then
+            actualEventValidationException.Should().BeEquivalentTo(
+                expectedEventValidationException);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedEventValidationException))),
+                        Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
         [Fact]
         public async Task ShouldAddEventAsync()
         {
@@ -47,5 +81,16 @@ namespace Taarafo.Core.Tests.Unit.Services.Foundations.Events
 
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ShouldDoStuff()
+        {
+            List<string> strings = new List<string>();
+
+            strings.Where(ValueIsRajee);
+
+        }
+            static Func<string, bool> ValueIsRajee =
+                s => s is "Rajee";
     }
 }
