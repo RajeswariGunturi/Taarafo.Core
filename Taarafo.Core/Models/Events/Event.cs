@@ -16,9 +16,9 @@ namespace Taarafo.Core.Models.Events
         public DateTime Date { get; set; }
         public string Location { get; set; }
         public string Image { get; set; }
-        public Guid CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public Guid CreatedBy { get; set; }
         public Guid UpdatedBy { get; set; }
-        public DateTime MyProperty { get; set; }
     }
 }
