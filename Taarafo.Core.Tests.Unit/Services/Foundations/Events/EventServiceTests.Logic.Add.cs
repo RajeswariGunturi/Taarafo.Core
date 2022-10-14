@@ -23,39 +23,6 @@ namespace Taarafo.Core.Tests.Unit.Services.Foundations.Events
     public partial class EventServiceTests
     {
         [Fact]
-        public async Task ShouldThrowValidationExceptionOnAddIfEventIsNullAndLogItAsync()
-        {
-            // given
-            Event nullEvent = null;
-
-            var nullEventException =
-                new NullEventException();
-
-            var expectedEventValidationException =
-                new EventValidationException(nullEventException);
-
-            // when
-            ValueTask<Event> addEventTask =
-                this.eventService.AddEventAsync(nullEvent);
-
-            EventValidationException actualEventValidationException =
-               await Assert.ThrowsAsync<EventValidationException>(
-                   addEventTask.AsTask);
-
-            // then
-            actualEventValidationException.Should().BeEquivalentTo(
-                expectedEventValidationException);
-
-            this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs(
-                    expectedEventValidationException))),
-                        Times.Once);
-
-            this.loggingBrokerMock.VerifyNoOtherCalls();
-            this.storageBrokerMock.VerifyNoOtherCalls();
-        }
-
-        [Fact]
         public async Task ShouldAddEventAsync()
         {
             // given

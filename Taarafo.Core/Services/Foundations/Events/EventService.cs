@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Taarafo.Core.Brokers.Loggings;
 using Taarafo.Core.Brokers.Storages;
 using Taarafo.Core.Models.Events;
+using Taarafo.Core.Models.Events.Exceptions;
 
 namespace Taarafo.Core.Services.Foundations.Events
 {
-    public class EventService : IEventService
+    public partial class EventService : IEventService
     {
         private readonly IStorageBroker storageBroker;
         private readonly ILoggingBroker loggingBroker;
@@ -23,9 +24,13 @@ namespace Taarafo.Core.Services.Foundations.Events
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<Event> AddEventAsync(Event @event)
-        {
-            return await this.storageBroker.InsertEventAsync(@event);
-        }
+        public ValueTask<Event> AddEventAsync(Event @event) =>
+            TryCatch(async () =>
+            {
+                ValidateEventOnAdd(@event);
+
+                return await this.storageBroker.InsertEventAsync(@event);
+            });
+
     }
 }
