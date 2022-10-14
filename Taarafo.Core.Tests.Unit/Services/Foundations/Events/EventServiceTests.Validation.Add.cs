@@ -83,6 +83,10 @@ namespace Taarafo.Core.Tests.Unit.Services.Foundations.Events
                 "Text is required");
 
             invalidEventException.AddData(
+                key: nameof(Event.Location),
+                "Text is required");
+
+            invalidEventException.AddData(
                 key: nameof(Event.Image),
                 "Image is required");
 

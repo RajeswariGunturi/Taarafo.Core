@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Taarafo.Core.Models.Events;
 using Taarafo.Core.Models.Events.Exceptions;
+using Taarafo.Core.Models.Posts.Exceptions;
 using Xeptions;
 
 namespace Taarafo.Core.Services.Foundations.Events
@@ -25,6 +26,10 @@ namespace Taarafo.Core.Services.Foundations.Events
             catch (NullEventException nullEventException)
             {
                 throw CreateAndLogValidationException(nullEventException);
+            }
+            catch (InvalidEventException invalidEventException)
+            {
+                throw CreateAndLogValidationException(invalidEventException);
             }
         }
 
