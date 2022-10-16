@@ -51,6 +51,42 @@ namespace Taarafo.Core.Tests.Unit.Services.Foundations.Events
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldThrowValidationExceptionOnAddIfCreatedDateIsNotRecent()
+        {
+
+            //given
+            Event testEvent = CreateRandomEvent();
+            testEvent.CreatedDate = new DateTime(2030,5,5);
+
+            var invalidEventException =
+             new InvalidEventException();
+            var expectedEventValidationException =
+                new EventValidationException(
+                    invalidEventException);
+
+            //when
+            ValueTask<Event> addEventTask =
+                this.eventService.AddEventAsync(testEvent);
+            EventValidationException actualEventValidationException =
+               await Assert.ThrowsAsync<EventValidationException>(
+                   addEventTask.AsTask);
+
+         
+
+            //then
+            this.loggingBrokerMock.Verify(broker =>
+               broker.LogError(It.Is(SameExceptionAs(
+                   expectedEventValidationException))),
+                       Times.Once);
+
+
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
